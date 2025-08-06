@@ -1,0 +1,36 @@
+1. Create A new MONGO DB accout in Atlass
+2. Create New Cluster
+>>Create New Database
+    1. Save All Info / Credentilas in env file 
+    2. copy the given url also
+>> Set Up network Acess : 
+    >> go to Network Access
+    >> create new network acess (add ip Address)
+        >> click on ALLOW ACESS FROM ANYWHERE (to allow al request from dioffrent ip address to acess db)
+        >> confirm 
+
+>> add Conncetion to db (/lin/db.js)
+
+3. Create New Collection
+our Project has 2 Modules (collections): /modules/
+    >> 1 users
+        >>email
+        >>fullName
+        >>profilePic
+        >> _id
+    >> 2. messages
+        >>senderid
+        >>reciverId
+        >> text
+        >> image
+
+
+
+5. Create New Document
+6. Create New User
+7. Create New Role
+8. Create New Index
+9. Create New View
+10. Create New Pipeline
+11. Create New Aggregation
+1

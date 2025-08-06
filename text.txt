@@ -1,0 +1,18 @@
+/Frontend 
+ set up setup the project 
+  >> npm create vite@latest 
+  >> npm install
+  >> npm run dev 
+
+
+/Backend 
+Install all the packages >> npm install 
+    express 
+    mangoose 
+    dotenv 
+    jsonwebtoken 
+    bcryptjs 
+    cookie-parser 
+    cloudinary 
+    socket.io
+
