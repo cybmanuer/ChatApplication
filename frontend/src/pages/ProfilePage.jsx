@@ -1,25 +1,26 @@
+
+
+
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Camera, Mail, User } from "lucide-react";
 
-
 const ProfilePage = () => {
-  const { authUser, isUpdatingProfile, updateProfile } = useAuthStore(); 
-  // console.log(authUser);  // Get the auth user from the store for the current user
-  const [selectedImg, setSelectedImg] = useState(null); // State to store the selected image
+  const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
+  const [selectedImg, setSelectedImg] = useState(null);
 
-  const handleImageUpload = async (e) => { // Function to handle image upload that updates the profile picture with the selected image
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
 
-    reader.readAsDataURL(file); // Read the image file as a data URL (base64)
+    reader.readAsDataURL(file);
 
     reader.onload = async () => {
-      const base64Image = reader.result; // Convert the image to base64 format for storage in the database
+      const base64Image = reader.result;
       setSelectedImg(base64Image);
-      await updateProfile({ profilepic: base64Image }); // Update the profile picture in the database
+      await updateProfile({ profilePic: base64Image });
     };
   };
 
@@ -37,7 +38,8 @@ const ProfilePage = () => {
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <img
-                src={selectedImg || authUser.profilePic || "../src/assets/avatar.png"} alt="Profile" // Display the current selected pic OR current user's profile picture(from db) or a default image
+                src={selectedImg || authUser.profilePic || "../src/assets/avatar.png"}
+                alt="Profile"
                 className="size-32 rounded-full object-cover border-4 "
               />
               <label
