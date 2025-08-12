@@ -4,6 +4,17 @@
   >> npm install
   >> npm run dev 
 
+  >>packages
+      >> react-router-dom
+      >> react-hot-toast
+      >>npm install -D tailwindcss@3 postcss autoprefixer
+      >>npx tailwindcss init -p
+      >> npm i daisyui
+      >> npm install axios //insted of fetech api 
+      >>npm i zustand
+      
+Axios: Use for HTTP/fetch/API calls—powerful, feature-rich alternative to fetch().
+Zustand: Use for managing global, shared state in React—simple, fast, no need for boilerplate or context.
 
 /Backend 
 Install all the packages >> npm install 

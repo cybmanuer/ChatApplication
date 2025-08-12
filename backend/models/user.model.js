@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema(
             required : true,
             minlength : 6,
         },
-        profilepic : {
+        profilePic : {
             type : String,
             default : "",
         },

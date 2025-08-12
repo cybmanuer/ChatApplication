@@ -26,13 +26,13 @@ export const generateToken = (userId, res) =>{
     });
 
 
-res.cookie("jwt", token , {
-    maxAge : 7 * 24 * 60 * 60 *1000 ,  // the cookie/ session will expire after 7days 
-    httpOnly : true,  //to prevent XSS
-    sameSite : "strict", // to prevent csrf 
-    secure : process.env.NODE_ENV !=="development",  //to check if the request is http | https 
+    res.cookie("jwt", token , {
+        maxAge : 7 * 24 * 60 * 60 *1000 ,  // the cookie/ session will expire after 7days 
+        httpOnly : true,  //to prevent XSS
+        sameSite : "strict", // to prevent csrf 
+        secure : process.env.NODE_ENV !=="development",  //to check if the request is http | https 
 
-});
+    });
 
-return token ;
+    return token ;
 }

@@ -1,0 +1,279 @@
+:root{
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --primary: #2563eb; /* similar to blue */
+  --primary-10: rgba(37,99,235,0.08);
+  --muted: #6b7280;
+  --text: #111827;
+  --border: #e6e9ef;
+  --radius: 12px;
+}
+
+/* container layout */
+.signup-container {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr; /* mobile: single column */
+  background: var(--bg);
+}
+
+/* two-column on wide screens */
+@media (min-width: 1024px) {
+  .signup-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* left panel */
+.signup-left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px;
+}
+
+.signup-inner {
+  width: 100%;
+  max-width: 420px;
+  background: transparent;
+  padding: 8px;
+}
+
+/* right decorative panel */
+/* .signup-right {
+  background: linear-gradient(180deg, #eef2ff 0%, #f8fafc 100%);
+  display: none;
+} */
+
+@media (min-width: 1024px) {
+  .signup-right {
+    display: block;
+  }
+}
+
+/* logo area */
+.logo-area {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.logo-stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: var(--primary-10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.logo-badge:hover {
+  background: rgba(37,99,235,0.12);
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--primary);
+}
+
+/* texts */
+.title {
+  font-size: 1.5rem;
+  margin: 0;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* form layout */
+.signup-form {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* controls */
+.form-control .label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.label-text {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+/* input wrap for left icon + input + optional right button */
+.input-wrap {
+  position: relative;
+}
+
+/* left icon */
+.left-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* icon muted styling (applied to lucide icons via className) */
+.icon-muted {
+  width: 20px;
+  height: 20px;
+  color: var(--muted);
+}
+
+/* input field */
+.input-field {
+  width: 100%;
+  padding: 12px 44px 12px 40px; /* left space for icon, right for eye */
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  font-size: 0.95rem;
+  color: var(--text);
+  outline: none;
+  box-sizing: border-box;
+  transition: box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.input-field:focus {
+  border-color: rgba(37,99,235,0.6);
+  box-shadow: 0 6px 18px rgba(37,99,235,0.06);
+}
+
+/* eye button on right */
+.eye-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* remove default button outline, keep accessibility */
+.eye-button:focus {
+  outline: 2px solid rgba(37,99,235,0.18);
+  border-radius: 6px;
+}
+
+/* primary button */
+.primary-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.primary-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(37,99,235,0.12);
+}
+
+.primary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* loader icon */
+.loader-icon {
+  width: 18px;
+  height: 18px;
+  color: white;
+  animation: spin 1s linear infinite;
+}
+
+/* small loading text spacing */
+.loading-text {
+  margin-left: 6px;
+  font-weight: 600;
+}
+
+/* loader keyframes */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* muted line and link */
+.text-center {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.muted-line {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.inline-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.inline-link:hover {
+  text-decoration: underline;
+}
+
+
+/* right container */
+.signup-right {
+  background: linear-gradient(145deg, #141416, #bdc1c5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+/* small screens: center content a little */
+@media (max-width: 640px) {
+  .signup-left { padding: 20px; }
+  .logo-badge { width: 56px; height: 56px; border-radius: 14px; }
+  .logo-icon { width: 24px; height: 24px; }
+}
+
+
+
+
+
+
