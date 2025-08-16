@@ -26,7 +26,7 @@ dotenv.config()
 const PORT = process.env.PORT;
 
 app.use('/api/auth',authRoutes);  // -> extended code in route/auth.route.js
-app.use("/api/message",messageRoutes);  // message related code  -> logic is defined at route/message.route.js
+app.use("/api/messages",messageRoutes);  // message related code  -> logic is defined at route/message.route.js
 
 
 

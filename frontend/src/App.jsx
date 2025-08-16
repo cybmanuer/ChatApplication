@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import Navbar from "./components/Navbar.jsx";
 
@@ -9,11 +9,20 @@ import SignUpPage from "./pages/SignUpPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx"
 import SettingsPage from "./pages/SettingsPage.jsx"
 import ProfilePage from "./pages/ProfilePage.jsx"
+
 import { useAuthStore } from './store/useAuthStore.js';
+import { useThemeStore } from './store/useThemeStore.js';
+
 import { Toaster } from 'react-hot-toast';
 
+import daisyui from "daisyui";
+
+
+
+
 const App = () => {
-  const {authUser, checkAuth , isCheckingAuth}  = useAuthStore(); // Get the authenticated user -> defined in store/useAuthStore.js
+  const {authUser, checkAuth , isCheckingAuth}  = useAuthStore();
+  const { theme } = useThemeStore(); // Get the authenticated user -> defined in store/useAuthStore.js
   
   //this checks the user authentication before rendering the app / routes
   useEffect(() => {
@@ -30,7 +39,7 @@ const App = () => {
 
     //show app if user is authenticated
   return (
-    <div>
+    <div data-theme={theme}>
         <Navbar />
 
         <Routes>

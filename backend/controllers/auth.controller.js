@@ -96,7 +96,7 @@ export const login = async (req, res)=>{
         });
     }
     catch(e){
-        // console.log("Error in signup controler ", e.message);
+        console.log("Error in signup controler ", e.message);
         res.status(500).json({message : `Internal Server Error :  ${e.message}`});
     }
     

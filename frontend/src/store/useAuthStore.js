@@ -16,6 +16,8 @@ export const useAuthStore = create((set) => ({
     isLoggingIng : false,
     isUpdatingProfile : false,
     isCheckingAuth : true,  //to use or create va loding animation during authentication process
+    onlineUsers: [], //to store online users and used in side
+    socket: null,
     checkAuth : async () => { //to check if user is authenticated
         try {
             const res = await axiosInstance.get("/auth/check");  // we defined the check auth api in the backend
@@ -78,6 +80,26 @@ export const useAuthStore = create((set) => ({
         set({ isUpdatingProfile: false });
     }
     },
+//     connectSocket: () => {
+//     const { authUser } = get();
+//     if (!authUser || get().socket?.connected) return;
+
+//     const socket = io(BASE_URL, {
+//       query: {
+//         userId: authUser._id,
+//       },
+//     });
+//     socket.connect();
+
+//     set({ socket: socket });
+
+//     socket.on("getOnlineUsers", (userIds) => {
+//       set({ onlineUsers: userIds });
+//     });
+//   },
+//   disconnectSocket: () => {
+//     if (get().socket?.connected) get().socket.disconnect();
+//   }
 
 
 }));

@@ -56,6 +56,11 @@ export const sendMessage = async (req,res)=>{
             image : imageUrl,
         })
         await newMessage.save(); // saving to db
+
+        // const receiverSocketId = getReceiverSocketId(reciverId);
+        //     if (receiverSocketId) {
+        //         io.to(receiverSocketId).emit("newMessage", newMessage);
+        // }
         res.status(200).json(newMessage);
 
 
@@ -66,3 +71,6 @@ export const sendMessage = async (req,res)=>{
         res.status(500).json({ message: `Server Error ${error.message}` }); 
     }
 }
+
+
+
