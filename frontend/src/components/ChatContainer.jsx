@@ -19,26 +19,17 @@ const ChatContainer = () => {
     unsubscribeFromMessages,
   } = useChatStore();
   const { authUser } = useAuthStore();
-  const messageEndRef = useRef(null);
-
-  // useEffect(() => {
-  //   getMessages(selectedUser._id);
-
-  //   subscribeToMessages();
-
-  //   return () => unsubscribeFromMessages();
-  // }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessages]);
+  const messageEndRef = useRef(null); // useRef for scroll to bottom
 
 
   useEffect(() => {
     getMessages(selectedUser._id);
-
-    // subscribeToMessages();
-
-    // return () => unsubscribeFromMessages();
+    subscribeToMessages();
+    return () => unsubscribeFromMessages();
   }, [selectedUser._id, getMessages]);
 
-  useEffect(() => {
+
+  useEffect(() => { // scroll to bottom when new message arrives
     if (messageEndRef.current && messages) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -55,9 +46,6 @@ const ChatContainer = () => {
     );
   }
 
-
-
-
   return (
     <div className="flex-1 flex flex-col overflow-auto">
       <ChatHeader />
@@ -67,7 +55,7 @@ const ChatContainer = () => {
           <div
             key={message._id}
             className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}  //dasi ui for chat box icon based on sender or reciver"
-            ref={messageEndRef}>
+            ref={messageEndRef}> 
             <div className=" chat-image avatar">
               <div className="size-10 rounded-full border">
                 <img

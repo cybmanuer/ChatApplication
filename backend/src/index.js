@@ -3,7 +3,8 @@ import cookieParser from "cookie-parser"
 
 import cors from "cors"; // for cross-origin resource sharing,allows the server to accept requests from different origins like frontend and backend
 
-const app = express();
+// const app = express();
+import { app , server } from "../lib/socket.js"  // app is defined in socket.js file , it is replaced to use socketIo functions
 
 import {connectDB } from '../lib/db.js'
 
@@ -23,6 +24,7 @@ app.use(cors({ //middleware for cross-origin resource sharing) allows the server
 //env configration 
 import dotenv from "dotenv";
 dotenv.config()
+
 const PORT = process.env.PORT;
 
 app.use('/api/auth',authRoutes);  // -> extended code in route/auth.route.js
@@ -30,7 +32,7 @@ app.use("/api/messages",messageRoutes);  // message related code  -> logic is de
 
 
 
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{  //app.listen() is replaced with server.listen() because server is defined in socket.js file with the local host and port
     console.log(`App is running at http://localhost:` + PORT);
     connectDB();
 });

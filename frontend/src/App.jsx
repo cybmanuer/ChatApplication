@@ -21,9 +21,11 @@ import daisyui from "daisyui";
 
 
 const App = () => {
-  const {authUser, checkAuth , isCheckingAuth}  = useAuthStore();
+  const {authUser, checkAuth , isCheckingAuth , onlineUsers }  = useAuthStore();
   const { theme } = useThemeStore(); // Get the authenticated user -> defined in store/useAuthStore.js
   
+// console.log(onlineUsers);
+
   //this checks the user authentication before rendering the app / routes
   useEffect(() => {
     checkAuth(); // Check if user is authenticated on app load

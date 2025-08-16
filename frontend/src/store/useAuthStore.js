@@ -7,10 +7,13 @@
 import {create} from "zustand";
 import {axiosInstance} from "../lib/axios.js";
 import toast from "react-hot-toast";
+import {io} from "socket.io-client";
+
+const BASE_URL = "http://localhost:5001";
 
 //the below code works like a global state to manage user authentication in a React application and all its components can access and modify this state 
 //bwlow code creates a state that includes authUser, isSigningUp, isLoggingIn, isUpdatingProfile, and isCheckingAuth for user authentication
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set , get) => ({
     authUser : null,
     isSigningUp : false,
     isLoggingIng : false,
@@ -22,6 +25,7 @@ export const useAuthStore = create((set) => ({
         try {
             const res = await axiosInstance.get("/auth/check");  // we defined the check auth api in the backend
             set({authUser:res.data}); //update the state with the authenticated user
+            get().connectSocket(); // socket connection logic defined below
         } catch (error) {
             set({authUser: null}); //if authentication fails, set the authUser to null
             console.error(error);
@@ -36,7 +40,7 @@ export const useAuthStore = create((set) => ({
             const res = await axiosInstance.post("/auth/signup", data);
             set({ authUser: res.data });
             toast.success("Account created successfully");
-            get().connectSocket();
+            get().connectSocket(); // socket connection logic defined below 
         } catch (error) {
             toast.error(error.response.data.message);
         } finally {
@@ -48,7 +52,7 @@ export const useAuthStore = create((set) => ({
             await axiosInstance.post("/auth/logout");
             set({ authUser: null });
             toast.success("Logged out successfully");
-            get().disconnectSocket();
+            get().disconnectSocket();  // socket disconnection logic that disconnects socket
         } catch (error) {
             toast.error(error.response.data.message);
         }
@@ -60,7 +64,7 @@ export const useAuthStore = create((set) => ({
             set({ authUser: res.data });
             toast.success("Logged in successfully");
 
-            get().connectSocket();
+            get().connectSocket(); // socket connection logic
         } catch (error) {
             toast.error(error.response.data.message);
         } finally {
@@ -80,26 +84,27 @@ export const useAuthStore = create((set) => ({
         set({ isUpdatingProfile: false });
     }
     },
-//     connectSocket: () => {
-//     const { authUser } = get();
-//     if (!authUser || get().socket?.connected) return;
+    connectSocket: () => {
+    const { authUser } = get();
+    if (!authUser || get().socket?.connected) return; // if user is authenticated and socket is not connected, then connect to socket
 
-//     const socket = io(BASE_URL, {
-//       query: {
-//         userId: authUser._id,
-//       },
-//     });
-//     socket.connect();
+    const socket = io(BASE_URL, {
+      query: {
+        userId: authUser._id,
+      },
+    });
+    socket.connect();
 
-//     set({ socket: socket });
+    set({ socket: socket }); // set the socket to the state
 
-//     socket.on("getOnlineUsers", (userIds) => {
-//       set({ onlineUsers: userIds });
-//     });
-//   },
-//   disconnectSocket: () => {
-//     if (get().socket?.connected) get().socket.disconnect();
-//   }
+    socket.on("getOnlineUsers", (userIds) => { //socket.on is used to listen for events from the server`
+      set({ onlineUsers: userIds });
+    });
+  },
+
+  disconnectSocket: () => {
+    if (get().socket?.connected) get().socket.disconnect();
+  }
 
 
 }));
