@@ -12,6 +12,7 @@ import authRoutes from '../routes/auth.route.js';
 import messageRoutes from '../routes/message.route.js'
  //middleware 
 // app.use(express.json())
+
 app.use(express.json({ limit: '10mb' })); // to parse json request body with size limit
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); // to parse form-data request body with size limit
 
@@ -28,7 +29,6 @@ const __dirname = path.resolve(); // resolve the current path
 //env configration 
 import dotenv from "dotenv";
 dotenv.config()
-
 const PORT = process.env.PORT;
 
 app.use('/api/auth',authRoutes);  // -> extended code in route/auth.route.js
@@ -36,15 +36,15 @@ app.use("/api/messages",messageRoutes);  // message related code  -> logic is de
 
 
 
-if(process.env.NODE_ENV==="producation"){
-    app.use(express.static(path.join(__dirname, '../frontend'))); // serve static files from the build folder\\
+if(process.env.NODE_ENV==="production"){
+    app.use(express.static(path.join(__dirname, '../frontend/dist'))); // serve static files from the build folder\\
     app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, '../frontend', 'index.html'));
-    }); // the code is for production environment when deploying to production
+    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  }); // the code is for production environment when deploying to production
 }
 
 
 server.listen(PORT,()=>{  //app.listen() is replaced with server.listen() because server is defined in socket.js file with the local host and port
-    console.log(`App is running at http://localhost:` + PORT);
+    console.log(`server is running on PORT: ` + PORT);
     connectDB();
 });
