@@ -7,6 +7,6 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    baseURL : "http://localhost:5001/api", // rest of the url is passed while creating the instance
+    baseURL : import.meta.env.MODE === "development" ? "http://localhost:5001/api" : "/api", // Replace with your API endpoint
     withCredentials: true //used to send cookies with the request
 })

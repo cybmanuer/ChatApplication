@@ -9,7 +9,9 @@ import {axiosInstance} from "../lib/axios.js";
 import toast from "react-hot-toast";
 import {io} from "socket.io-client";
 
-const BASE_URL = "http://localhost:5001";
+const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5001" : "/";
+//above code is for development and production environment. It is used to switch between development and production server.
+
 
 //the below code works like a global state to manage user authentication in a React application and all its components can access and modify this state 
 //bwlow code creates a state that includes authUser, isSigningUp, isLoggingIn, isUpdatingProfile, and isCheckingAuth for user authentication
