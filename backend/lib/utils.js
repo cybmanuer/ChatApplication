@@ -31,7 +31,6 @@ export const generateToken = (userId, res) =>{
         httpOnly : true,  //to prevent XSS
         sameSite : "strict", // to prevent csrf 
         secure : process.env.NODE_ENV !=="development",  //to check if the request is http | https 
-
     });
 
     return token ;

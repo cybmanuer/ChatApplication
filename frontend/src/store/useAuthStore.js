@@ -73,19 +73,35 @@ export const useAuthStore = create((set , get) => ({
             set({ isLoggingIn: false });
         }
     },
+    // updateProfile: async (data) => {
+    // set({ isUpdatingProfile: true });
+    // try {
+    //     const res = await axiosInstance.put("/auth/update-profile", data);
+    //     set({ authUser: res.data });
+    //     toast.success("Profile updated successfully");
+    // } catch (error) {
+    //     console.log("error in update profile:", error);
+    //     toast.error(error.response.data.message);
+    // } finally {
+    //     set({ isUpdatingProfile: false });
+    // }
+    // },
+    
     updateProfile: async (data) => {
+    console.log("updateProfile sending data:", data); // 👈 Add this
     set({ isUpdatingProfile: true });
     try {
         const res = await axiosInstance.put("/auth/update-profile", data);
         set({ authUser: res.data });
         toast.success("Profile updated successfully");
     } catch (error) {
-        console.log("error in update profile:", error);
-        toast.error(error.response.data.message);
+        console.log("error in update profile:", error.response?.data || error);
+        toast.error(error.response?.data?.message || "Update failed");
     } finally {
         set({ isUpdatingProfile: false });
     }
     },
+
     connectSocket: () => {
     const { authUser } = get();
     if (!authUser || get().socket?.connected) return; // if user is authenticated and socket is not connected, then connect to socket

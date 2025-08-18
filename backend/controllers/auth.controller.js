@@ -114,31 +114,12 @@ export const logout = (req, res)=>{
     }
 }
 
-export const updateProfile = async (req, res) => {
-  try {
-    const { profilePic } = req.body;
-    const userId = req.user._id;
-
-    if (!profilePic) {
-      return res.status(400).json({ message: "Profile pic is required" });
-    }
-
-    const uploadResponse = await cloudinary.uploader.upload(profilePic);
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { profilePic: uploadResponse.secure_url },
-      { new: true }
-    );
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    console.log("error in update profile:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+// the profile pic updating is working good
 // export const updateProfile = async (req, res) => {
 //   try {
 //     const { profilePic } = req.body;
 //     const userId = req.user._id;
+
 //     if (!profilePic) {
 //       return res.status(400).json({ message: "Profile pic is required" });
 //     }
@@ -149,13 +130,50 @@ export const updateProfile = async (req, res) => {
 //       { profilePic: uploadResponse.secure_url },
 //       { new: true }
 //     );
-
 //     res.status(200).json(updatedUser);
 //   } catch (error) {
 //     console.log("error in update profile:", error);
-//     res.status(500).json({ message: "Internal server error : " +error.message });
+//     res.status(500).json({ message: "Internal server error" });
 //   }
 // };
+
+
+// Updating UserName and profile pic
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { profilePic, fullName } = req.body;
+    const userId = req.user._id;
+
+    let updateData = {};
+
+    // If profile pic provided → upload to cloudinary
+    if (profilePic) {
+      const uploadResponse = await cloudinary.uploader.upload(profilePic);
+      updateData.profilePic = uploadResponse.secure_url;
+    }
+
+    // If fullName provided → update it
+    if (fullName) {
+      updateData.fullName = fullName;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ message: "No valid data provided" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true }
+    );
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log("error in update profile:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 export const checkAuth = (req,res)=>{
     try {

@@ -7,6 +7,7 @@ import { Users } from "lucide-react";
 
 const Sidebar = () => {
   const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+  const constimg = "https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"
 
   const { onlineUsers } = useAuthStore();
   // console.log(onlineUsers);
@@ -58,7 +59,7 @@ const Sidebar = () => {
           >
             <div className="relative mx-auto lg:mx-0">
               <img
-                src={user.profilePic || "./src/assets/avatar.png"}
+                src={user.profilePic || constimg}
                 alt={user.name}
                 className="size-12 object-cover rounded-full"
               />
