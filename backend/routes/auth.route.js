@@ -3,7 +3,7 @@ import express from 'express'
 const router = express.Router();
 
 // importing the controllers 
-import { signup,logout,login,updateProfile,checkAuth} from '../controllers/auth.controller.js';
+import { signup,logout,login,updateProfile,checkAuth,deleteUser} from '../controllers/auth.controller.js';
 
 import {protectRoute} from "../middleware/auth.middleware.js"
 
@@ -17,6 +17,8 @@ router.post("/logout",logout)
 router.put("/update-profile", protectRoute, updateProfile);
 
 router.get("/check" , protectRoute , checkAuth); // used to verify if the user is loged in or not 
+
+router.delete("/delete-account", protectRoute, deleteUser) //yet to build this route
 
 
 

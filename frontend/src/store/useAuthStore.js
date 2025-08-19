@@ -30,7 +30,7 @@ export const useAuthStore = create((set , get) => ({
             get().connectSocket(); // socket connection logic defined below
         } catch (error) {
             set({authUser: null}); //if authentication fails, set the authUser to null
-            console.error(error);
+            // console.error(error);
         }
         finally{
             set({isCheckingAuth: false}); //set the isCheckingAuth to false before the request is finished
@@ -101,6 +101,24 @@ export const useAuthStore = create((set , get) => ({
         set({ isUpdatingProfile: false });
     }
     },
+    
+    deleteAccount: async () => {
+        set({ isDeleting: true });
+        try {
+            await axiosInstance.delete("/auth/delete-account");
+            set({ authUser: null });
+            toast.success("Account deleted successfully");
+            // set({ authUser: null }); // clear local state
+            // Optional: redirect to login or home
+            // window.location.href = "/login";
+        } catch (error) {
+            console.log("error in delete account:", error);
+            toast.error(error.response?.data?.message || "Failed to delete account");
+        } finally {
+            set({ isDeleting: false });
+        }
+    },
+
 
     connectSocket: () => {
     const { authUser } = get();

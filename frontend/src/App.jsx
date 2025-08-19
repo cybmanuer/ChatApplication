@@ -15,7 +15,7 @@ import { useThemeStore } from './store/useThemeStore.js';
 
 import { Toaster } from 'react-hot-toast';
 
-import daisyui from "daisyui";
+import { useLocation } from "react-router-dom";
 
 
 
@@ -23,13 +23,24 @@ import daisyui from "daisyui";
 const App = () => {
   const {authUser, checkAuth , isCheckingAuth , onlineUsers }  = useAuthStore();
   const { theme } = useThemeStore(); // Get the authenticated user -> defined in store/useAuthStore.js
-  
+  const location = useLocation();
+
 // console.log(onlineUsers);
 
   //this checks the user authentication before rendering the app / routes
   useEffect(() => {
     checkAuth(); // Check if user is authenticated on app load
   }, [checkAuth]); // checkAuth on app load  
+
+
+//  useEffect(() => {
+//     if (location.pathname !== "/login" && location.pathname !== "/signup") {
+//         checkAuth();
+//     }
+//     else{
+//     useAuthStore.getState().set({ isCheckingAuth: false });
+//     }
+//   }, [checkAuth, location.pathname]); // <-- add location.pathname here
 
   //show loading animation while checking authentication
   if(isCheckingAuth && !authUser) {

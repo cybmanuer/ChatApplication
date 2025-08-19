@@ -8,6 +8,8 @@
 
 
 import User from "../models/user.model.js";
+import Message from "../models/message.model.js";
+
 import bcrypt from "bcryptjs"
 
 import {generateToken} from "../lib/utils.js"
@@ -182,4 +184,38 @@ export const checkAuth = (req,res)=>{
         console.log("Error in CheckAuth Controller" ,e.message);
         res.status(500).json({message : "Internal Server Error"});
     }
-}
+};
+
+
+
+// export const deleteUser = async (req, res) => {
+//     try {
+//         const userId = req.user._id;
+//         await User.findByIdAndDelete(userId);
+//         res.status(200).json({ message: "User deleted successfully" });
+//     } catch (error) {
+//         console.log("Error in deleteUser controller:", error);
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// };
+
+export const deleteUser = async (req, res) => {
+    try {
+        const userId = req.user._id;
+ 
+        // 2) Delete messages sent OR received by user
+        await Message.deleteMany({
+            $or: [{ senderId: userId }, { reciverId: userId }],
+        });
+
+    //  Delete the user
+        await User.findByIdAndDelete(userId);
+        res.cookie("jwt", "", { maxAge: 0 });
+        res.status(200).json({ message: "User deleted successfully" });
+        // 6) Clear the JWT token from the client-side
+        // res.cookie("jwt", "", { maxAge: 0 });
+    } catch (error) {
+        console.log("Error in deleteUser controller:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
