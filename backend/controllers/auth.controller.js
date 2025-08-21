@@ -219,3 +219,53 @@ export const deleteUser = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+// for disappering messages after 24 hours
+// implimentedin cleanup.js
+
+// export const deleteOldMessages = async (req, res) => {
+//   try {
+//     const userId = req.user._id;
+
+//     // 1) calculate the 24hr cutoff
+//     const cutoffTime = new Date(Date.now() - 24 * 60 * 60 * 1000);
+//     // const cutoffTime = new Date(Date.now() - 60 * 1000);
+//     // 2) Delete messages where:
+//     // - senderId OR reciverId matches current user
+//     // - createdAt is older than cutoff
+//     const result = await Message.deleteMany({
+//       $and: [
+//         { $or: [{ senderId: userId }, { reciverId: userId }] },
+//         { createdAt: { $lt: cutoffTime } }
+//       ]
+//     });
+//     res.status(200).json({
+//       message: "Old messages deleted successfully",
+//       deletedCount: result.deletedCount,
+//     });
+//   } catch (error) {
+//     console.error("Error deleting messages:", error.message);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
+
+export const updateDisappearing = async (req, res) => {
+    try {
+        const { isDisappearing } = req.body;
+        const userId = req.user._id; // from protectRoute middleware (JWT)
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { isDisappearing },
+            { new: true }
+        ).select("-password"); // don’t return password
+
+        res.json(updatedUser);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to update setting" + err });
+    }
+};
+

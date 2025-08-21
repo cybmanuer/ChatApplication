@@ -9,7 +9,10 @@ import { app , server } from "../lib/socket.js"  // app is defined in socket.js 
 import {connectDB } from '../lib/db.js'
 
 import authRoutes from '../routes/auth.route.js';
-import messageRoutes from '../routes/message.route.js'
+import messageRoutes from '../routes/message.route.js' 
+
+import { startCleanupJob } from "../lib/cleanup.js"; //for server side code  to enable the disappear msges features
+
  //middleware 
 // app.use(express.json())
 
@@ -48,4 +51,5 @@ if(process.env.NODE_ENV==="production"){
 server.listen(PORT,()=>{  //app.listen() is replaced with server.listen() because server is defined in socket.js file with the local host and port
     console.log(`server is running on PORT: ` + PORT);
     connectDB();
+    startCleanupJob();
 });

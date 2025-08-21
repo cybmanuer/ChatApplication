@@ -1,13 +1,13 @@
 
 
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Camera, Mail, User ,Edit2,Check,X} from "lucide-react";
 import toast from "react-hot-toast";
 
 const ProfilePage = () => {
-  const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
+  const { authUser, isUpdatingProfile, updateProfile, updateDisappearing} = useAuthStore();
   const [selectedImg, setSelectedImg] = useState(null);
 
   
@@ -53,6 +53,24 @@ const ProfilePage = () => {
     await deleteAccount();
     setIsOpen(false);
   };
+
+
+  const [isDisappearing, setIsDisappearing] = useState(authUser?.isDisappearing || false);
+
+  useEffect(() => {
+    if (authUser?.isDisappearing !== undefined) {
+      setIsDisappearing(authUser.isDisappearing);
+    }
+  }, [authUser]);
+    // console.log(authUser.isDisappearing)
+
+  const handleToggleDisappear = async () => {
+    const newValue = !isDisappearing;
+    setIsDisappearing(newValue);
+    // console.log(newValue)
+    await updateDisappearing(newValue); // ✅ separate function
+  };
+
 
   return (
     <div className="h-screen pt-20">
@@ -169,21 +187,46 @@ const ProfilePage = () => {
           <div className="mt-6 bg-base-300 rounded-xl p-6">
             <h2 className="text-lg font-medium  mb-4">Account Information</h2>
             <div className="space-y-3 text-sm">
-              <div className="flex items-center justify-between py-2 border-b border-zinc-700">
+              <div className="flex items-center justify-between py-6 border-b border-zinc-700">
                 <span>Member Since</span>
                 <span>{authUser.createdAt?.split("T")[0]}</span>
               </div>
-              <div className="flex items-center justify-between py-2">
+              <div className="flex items-center justify-between py-6 border-b border-zinc-700">
                 <span>Account Status</span>
                 <span className="text-green-500">Active</span>
               </div>
-              <div className="flex items-center justify-between py-2 ">
+              {/* dispearing msges  */}
+
+              <div className="flex items-center justify-between py-4 border-b border-zinc-700">
+                    {/* Left text */}
+                    <div className="flex flex-col">
+                      <span className="font-medium">Disappearing message</span>
+                      <span className="text-sm text-gray-500">
+                        Messages will be automatically deleted after 24hrs
+                      </span>
+                    </div>
+
+                    {/* Toggle switch */}
+                     <input
+                        type="checkbox"
+                        className="toggle toggle-error"
+                        style={{ color: "green" }}
+                        checked={isDisappearing}
+                        onChange={handleToggleDisappear}
+                        disabled={isUpdatingProfile}
+                      />
+                </div>
+
+              {/* delete account code  */}
+
+              <div className="flex items-center justify-between py-6 border-b border-zinc-700">
                 <span>Delete Account</span>
                 <span className="text-sm text-gray-500">This action cannot be undone</span>
                 {/* Delete button */}
                 <button
-                  className="btn btn-error btn-sm"
+                  className="btn  btn-sm"
                   onClick={() => setIsOpen(true)}
+                  style={{"backgroundColor": "red"}}
                 >Delete
                 </button>
 
@@ -220,7 +263,12 @@ const ProfilePage = () => {
                     </div>
                   </div>
                 )}
-                </div>
+              </div>              
+
+
+
+
+
             </div>
           </div>
         </div>

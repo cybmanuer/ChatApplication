@@ -119,6 +119,42 @@ export const useAuthStore = create((set , get) => ({
         }
     },
 
+    updateDisappearing: async (isDisappearing) => {
+    set({ isUpdatingProfile: true });
+    try {
+        const res = await axiosInstance.put("/auth/disappear-msg", { isDisappearing });
+        set({ authUser: res.data });  // update local user state
+        // console.log("REQ BODY:", req.body);
+        toast.success(
+        isDisappearing
+            ? "Disappearing messages enabled"
+            : "Disappearing messages disabled"
+        );
+    } catch (error) {
+        console.log("error in update disappearing:", error);
+        toast.error(error.response?.data?.message || "Failed to update disappearing setting");
+    } finally {
+        set({ isUpdatingProfile: false });
+    }
+    },
+    // code is implimented inside the server.js
+    // enableDisappear: async () => {
+    //     set({ isDeleting: true });
+    //     try {
+    //         await axiosInstance.delete("/auth/delete-account");
+    //         set({ authUser: null });
+    //         toast.success("Account deleted successfully");
+    //         // set({ authUser: null }); // clear local state
+    //         // Optional: redirect to login or home
+    //         // window.location.href = "/login";
+    //     } catch (error) {
+    //         console.log("error in delete account:", error);
+    //         toast.error(error.response?.data?.message || "Failed to delete account");
+    //     } finally {
+    //         set({ isDeleting: false });
+    //     }
+    // },
+
 
     connectSocket: () => {
     const { authUser } = get();
