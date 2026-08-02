@@ -576,15 +576,9 @@ index=chatapp_lab
 
 
 # Future Improvements
-
-* Brute-force login detection
-* Failed login alerts
-* Suspicious IP detection
-* Splunk dashboards
 * Email alerts
 * GeoIP analysis
 * MITRE ATT&CK mapping
-* SOC incident dashboards
 
 ---
 
