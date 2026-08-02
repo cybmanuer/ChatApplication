@@ -1,4 +1,4 @@
-# 💬 BaaNudi – Secure MERN Chat Application with Splunk SOC Integration
+# 💬 BaaNudi – MERN Chat Application with Splunk SOC Integration
 
 A real-time chat application built using the **MERN Stack**, **Socket.IO**, **Cloudinary**, and **JWT Authentication**.
 
