@@ -5,6 +5,7 @@
 
 import jwt from "jsonwebtoken"
 import User from "../models/user.model.js"
+import { logSecurityEvent } from "../lib/splunkLogger.js"
 
 
 export const protectRoute = async (req,res,next)=>{
@@ -13,6 +14,7 @@ export const protectRoute = async (req,res,next)=>{
 
         // check if the user loged in with token
         if(!token){
+            logSecurityEvent("auth_denied", req, { reason: "no_token" });
             return res.status(401).json({message : "Unauthorized - No token Provided"});
         }
 
@@ -20,12 +22,14 @@ export const protectRoute = async (req,res,next)=>{
 
 
         if(!decoded){
+            logSecurityEvent("auth_denied", req, { reason: "invalid_token" });
             return res.status(401).json({message : "Unauthorized - Invalid Token "});
         }
 
         const user = await User.findById(decoded.userId).select("-password");  // Get user from DB using decoded userId, exclude password
 
         if(!user){
+            logSecurityEvent("auth_denied", req, { reason: "user_not_found", userId: decoded.userId });
             return res.status(404).json({message : "User Not Found"});
         }
 
@@ -40,4 +44,3 @@ export const protectRoute = async (req,res,next)=>{
         
     }
 }
-

@@ -11,10 +11,16 @@ import {connectDB } from '../lib/db.js'
 import authRoutes from '../routes/auth.route.js';
 import messageRoutes from '../routes/message.route.js' 
 
+import { volumetricWatch } from "../middleware/volumetricWatch.middleware.js";
+
 import { startCleanupJob } from "../lib/cleanup.js"; //for server side code  to enable the disappear msges features
 
  //middleware 
 // app.use(express.json())
+
+app.set('trust proxy', true); // Render (and ngrok) sit in front of this app as a reverse proxy;
+// without this, req.ip would show the proxy's internal IP instead of the real client IP,
+// which we need for accurate security logging (brute-force detection, etc.)
 
 app.use(express.json({ limit: '10mb' })); // to parse json request body with size limit
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); // to parse form-data request body with size limit
@@ -33,6 +39,8 @@ const __dirname = path.resolve(); // resolve the current path
 import dotenv from "dotenv";
 dotenv.config()
 const PORT = process.env.PORT;
+
+app.use(volumetricWatch); // flags IPs sending an abnormally high request rate
 
 app.use('/api/auth',authRoutes);  // -> extended code in route/auth.route.js
 app.use("/api/messages",messageRoutes);  // message related code  -> logic is defined at route/message.route.js
