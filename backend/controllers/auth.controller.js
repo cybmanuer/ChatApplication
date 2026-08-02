@@ -16,6 +16,8 @@ import {generateToken} from "../lib/utils.js"
 
 import cloudinary from "../lib/cloudinary.js"
 
+import { logSecurityEvent } from "../lib/splunkLogger.js"
+
 // Signup page logic
 export const signup = async (req, res)=>{
     const {fullName,email,password} = req.body;
@@ -24,6 +26,12 @@ export const signup = async (req, res)=>{
             return res.status(400).json({message : "All fields are Required"});
 
         }
+        // Guard against NoSQL injection: without this, a body like
+        // straight into a Mongo query as an operator instead of a value.
+        if (typeof email !== "string" || typeof password !== "string" || typeof fullName !== "string") {
+            logSecurityEvent("injection_attempt", req, { reason: "non_string_field", endpoint: "signup" });
+            return res.status(400).json({message : "Invalid input"});
+        }
         if(password.length < 6){
             return res.status(400).json({message : "Password Must Be Atleast 6 Character"});
         }
@@ -31,7 +39,8 @@ export const signup = async (req, res)=>{
         // check if the user Already exsits.
         const user = await User.findOne({email});
         if(user){
-            return res.status(400).json({message : "User Already Exisits "});
+            logSecurityEvent("signup_failure", req, { reason: "user_exists", email });
+            return res.status(400).json({message : "User Already Exisits, Please Login "});
         }
 
         // generate hashed passsword 
@@ -48,6 +57,8 @@ export const signup = async (req, res)=>{
         if(newUser){
             generateToken(newUser._id,res); // generating the JWT token / from the file /lib/utils.js -> complete code is written
             await newUser.save(); // save the stored data of the new user.
+
+            logSecurityEvent("signup_success", req, { userId: newUser._id, email: newUser.email });
 
             // sharing the response, data 
             res.status(201).json({
@@ -76,19 +87,26 @@ export const login = async (req, res)=>{
         if(!password ||!email){
             return res.status(400).json({message : "All fields are Required"});
         }
+        if (typeof email !== "string" || typeof password !== "string") {
+            logSecurityEvent("injection_attempt", req, { reason: "non_string_field", endpoint: "login" });
+            return res.status(400).json({message : "Invalid input"});
+        }
         if(password.length < 6){
             return res.status(400).json({message : "Password Must Be Atleast 6 Character"});
         }
         // check if the user Already exsits.
         const user = await User.findOne({email});
         if(!user){
+            logSecurityEvent("login_failure", req, { reason: "user_not_found", email });
             return res.status(400).json({message : "User Not Found"});
         }
         const isCorrectPass = await bcrypt.compare(password , user.password);
         if(!isCorrectPass){
-            res.status(400).json({message : "Invalid  Password"});
+            logSecurityEvent("login_failure", req, { reason: "invalid_password", email, userId: user._id });
+            return res.status(400).json({message : "Invalid  Password"});
         }
         generateToken(user._id,res); // generating the JWT token / from the file /lib/utils.js -> complete code is written
+        logSecurityEvent("login_success", req, { userId: user._id, email: user.email });
         // sharing the response, data 
         res.status(200).json({
             _id : user._id,
@@ -109,6 +127,7 @@ export const logout = (req, res)=>{
     try
     {
         res.cookie("jwt" , "" , {maxAge : 0})
+        logSecurityEvent("logout", req, { userId: req.user?._id });
         res.status(200).json({message : "Logged Out Successfuly"});
     }
     catch(e){
@@ -116,32 +135,7 @@ export const logout = (req, res)=>{
     }
 }
 
-// the profile pic updating is working good
-// export const updateProfile = async (req, res) => {
-//   try {
-//     const { profilePic } = req.body;
-//     const userId = req.user._id;
-
-//     if (!profilePic) {
-//       return res.status(400).json({ message: "Profile pic is required" });
-//     }
-
-//     const uploadResponse = await cloudinary.uploader.upload(profilePic);
-//     const updatedUser = await User.findByIdAndUpdate(
-//       userId,
-//       { profilePic: uploadResponse.secure_url },
-//       { new: true }
-//     );
-//     res.status(200).json(updatedUser);
-//   } catch (error) {
-//     console.log("error in update profile:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// };
-
-
 // Updating UserName and profile pic
-
 export const updateProfile = async (req, res) => {
   try {
     const { profilePic, fullName } = req.body;
@@ -187,18 +181,6 @@ export const checkAuth = (req,res)=>{
 };
 
 
-
-// export const deleteUser = async (req, res) => {
-//     try {
-//         const userId = req.user._id;
-//         await User.findByIdAndDelete(userId);
-//         res.status(200).json({ message: "User deleted successfully" });
-//     } catch (error) {
-//         console.log("Error in deleteUser controller:", error);
-//         res.status(500).json({ message: "Internal server error" });
-//     }
-// };
-
 export const deleteUser = async (req, res) => {
     try {
         const userId = req.user._id;
@@ -211,6 +193,7 @@ export const deleteUser = async (req, res) => {
     //  Delete the user
         await User.findByIdAndDelete(userId);
         res.cookie("jwt", "", { maxAge: 0 });
+        logSecurityEvent("account_deleted", req, { userId });
         res.status(200).json({ message: "User deleted successfully" });
         // 6) Clear the JWT token from the client-side
         // res.cookie("jwt", "", { maxAge: 0 });
@@ -268,4 +251,3 @@ export const updateDisappearing = async (req, res) => {
         res.status(500).json({ error: "Failed to update setting" + err });
     }
 };
-

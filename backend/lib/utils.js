@@ -19,6 +19,15 @@
 
 import jwt from "jsonwebtoken"
 
+// Shared IP-resolution logic used by splunkLogger and volumetricWatch, so both
+// bucket requests by the exact same IP. 
+export const getClientIp = (req) => {
+    if (req.ip) return req.ip;
+    const xff = req.headers["x-forwarded-for"];
+    if (xff) return xff.split(",")[0].trim();
+    return req.socket?.remoteAddress || "unknown";
+};
+
 export const generateToken = (userId, res) =>{
     //USER ID -> payload , JWT_Screet -> screet key , expiresIn -> an optional arg
     const token = jwt.sign({userId} , process.env.JWT_SECRET, {
