@@ -1,4 +1,4 @@
-# 💬 ChatApplication
+# 💬 ChatApplication | V1 | Basic Chat App
 
 A full-stack real-time chat application built with the MERN stack, Socket.IO, and Cloudinary.
 
